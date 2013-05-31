@@ -1,7 +1,7 @@
 module SudokuSolver(
- {-solve-}
-{-, lineToBoard-}
-{-, squareToBoard-}
+ solve
+, lineToBoard
+, squareToBoard
 )
 where
 
@@ -31,25 +31,30 @@ squareToBoard contents = map read $ concat . map words $ lines contents
  - 5 being 41 `mod` 9. So I take 9 elements starting with startPos.
  -}
 getLineIndexes :: Int -> Line
-getLineIndexes index = take 9 [startPos..]
-    where startPos = index - (index `mod` 9)
+getLineIndexes index = take 9 [first..]
+    where first = index - (index `mod` 9)
 
 {- Given an element's index on the board (between 0 and 80) return all indexes
  - on the same column in a 9x9 board
  -
- - The logic behind this:
  - If the user wants to retrieve the indexes on the same column with the index
  - 41 then he will get: [5,14..77]
- - this is because I filter out everything in [0..80] that doesn't have the same
- - reminder as the index when doing `mod` 9
+ -
+ - The logic behind the first implementation (filter):
+ - I filter out everything in [0..80] that doesn't have the same remainder as the
+ - index when doing `mod` 9
+ -
+ - The logic behind the second implementation:
+ - I calculate the start element and then generate the rest of the column by
+ - adding 9 to the previous element
  -}
 getColumnIndexes :: Int -> Column
-{-getColumnIndexes index = filter ((==) remainder . (flip mod) 9) [0..80]-}
-getColumnIndexes index = filter (\x -> (x `mod` 9) == remainder) [0..80]
-    where remainder = index `mod` 9
+getColumnIndexes index = take 9 [first,first+9 ..]
+    where first = index `mod` 9
 
 getBoxIndexes :: Int -> Box
-getBoxIndexes index = [42] -- TODO
+getBoxIndexes index = take 3 [start..] -- TODO columns
+    where start = index - (index `mod` 3)
 
 solve :: SudokuBoard -> SudokuBoard
 solve board = [1,2] -- TODO
