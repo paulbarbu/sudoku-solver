@@ -2,10 +2,9 @@ module SudokuSolver(
  solve
 , lineToBoard
 , squareToBoard
+, prettyPrint
 )
 where
-
--- TODO pretty print
 
 import Data.Char(digitToInt)
 import Data.List(nubBy, (\\), union)
@@ -85,3 +84,16 @@ solve n board
             else
                 solve (n+1) newboard
             where newboard = replaceAtIndex n x board
+
+splitEvery :: Int -> [a] -> [[a]]
+splitEvery _ [] = []
+splitEvery n xs = left : splitEvery n right
+    where (left,right) = splitAt n xs
+
+prettyPrint :: [[Int]] -> IO ()
+prettyPrint boards = mapM_ (\a -> do
+                            putStrLn ""
+                            mapM_ print a) boardsRows
+    where boardsRows = map (splitEvery 9) boards
+
+{-chunks n = map (take n) . takeWhile (not . null) . iterate (drop n)-}
