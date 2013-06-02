@@ -65,5 +65,14 @@ replaceAtIndex :: Int -> a -> [a] -> [a]
 replaceAtIndex index newElem xs = left ++ [newElem] ++ drop 1 right
     where (left,right) = splitAt index xs
 
-solve :: SudokuBoard -> SudokuBoard
-solve board = [1,2] -- TODO
+solve :: Int -> [Int] -> IO ()
+solve n board
+    | board !! n == 0 = mapM_ (solve' board) $ availableElems n board
+    | n == 80 = print board
+    | otherwise = solve (n+1) board
+    where solve' board x = do
+            let newboard = replaceAtIndex n x board
+            if n == 80 then do
+                print newboard
+            else do
+                solve (n+1) newboard
