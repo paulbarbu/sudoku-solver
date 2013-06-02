@@ -65,6 +65,16 @@ replaceAtIndex :: Int -> a -> [a] -> [a]
 replaceAtIndex index newElem xs = left ++ [newElem] ++ drop 1 right
     where (left,right) = splitAt index xs
 
+{- Solve a sudoku board
+ -
+ - If the current position (n) is 0 then it needs solving which is done by
+ - filling it with the first available element then by moving forward to the
+ - next element
+ -
+ - If n is 80 then it means we reached the end of a solved board, so we print it
+ - Otherwise we found an element in the middle of the board which is already
+ - filled so we move forward
+ -}
 solve :: Int -> [Int] -> IO ()
 solve n board
     | board !! n == 0 = mapM_ (solve' board) $ availableElems n board
