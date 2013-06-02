@@ -4,5 +4,5 @@ import SudokuSolver
 
 main = do
     [fileName] <- getArgs -- input validation
-    contents <- readFile fileName -- read one line -- input validation
-    putStrLn $ concatMap show $ solve $ lineToBoard contents
+    contents <- readFile fileName -- input validation
+    solve 0 $ lineToBoard $ init contents
