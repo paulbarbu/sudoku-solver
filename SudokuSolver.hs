@@ -6,7 +6,6 @@ module SudokuSolver(
 where
 
 -- TODO pretty print
--- return a list of lists in solve
 
 import Data.Char(digitToInt)
 import Data.List(nubBy, (\\), union)
@@ -65,7 +64,7 @@ replaceAtIndex :: Int -> a -> [a] -> [a]
 replaceAtIndex index newElem xs = left ++ [newElem] ++ drop 1 right
     where (left,right) = splitAt index xs
 
-{- Solve a sudoku board
+{- Solve a sudoku board returning a list of solved boards
  -
  - If the current position (n) is 0 then it needs solving which is done by
  - filling it with the first available element then by moving forward to the
@@ -75,14 +74,14 @@ replaceAtIndex index newElem xs = left ++ [newElem] ++ drop 1 right
  - Otherwise we found an element in the middle of the board which is already
  - filled so we move forward
  -}
-solve :: Int -> [Int] -> IO ()
+solve :: Int -> [Int] -> [[Int]]
 solve n board
-    | board !! n == 0 = mapM_ (solve' board) $ availableElems n board
-    | n == 80 = print board
+    | board !! n == 0 = concatMap (solve' board ) $ availableElems n board
+    | n == 80 = [board]
     | otherwise = solve (n+1) board
-    where solve' board x = do
-            let newboard = replaceAtIndex n x board
-            if n == 80 then do
-                print newboard
-            else do
+    where solve' board x =
+            if n == 80 then
+                [newboard]
+            else
                 solve (n+1) newboard
+            where newboard = replaceAtIndex n x board
