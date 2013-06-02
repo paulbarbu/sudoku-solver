@@ -5,32 +5,25 @@ module SudokuSolver(
 )
 where
 
-import Data.Char(digitToInt)
-import Data.List(nubBy)
+-- TODO pretty print
+-- return a list of lists in solve
 
-type SudokuBoard = [Int]
-type Line = [Int]
-type Column = [Int]
-type Box = [Int]
+import Data.Char(digitToInt)
+import Data.List(nubBy, (\\), union)
+import System.IO
 
 -- Transforms something like "123" in [1,2,3]
-lineToBoard :: String -> SudokuBoard
+lineToBoard :: String -> [Int]
 lineToBoard = map digitToInt
 
 -- Transforms something like "1 2 3\n4 5 6" in [1,2,3,4,5,6]
-squareToBoard :: String -> SudokuBoard
+squareToBoard :: String -> [Int]
 squareToBoard contents = map read $ concat . map words $ lines contents
 
 {- Given an element's index on the board (between 0 and 80) return all indexes
  - on the same line in a 9x9 board
- -
- - The logic behind this:
- - If the user wants to retrieve the indexes on the same line with the index 41
- - then he will get: [36,37..44]
- - this is because the start position (36) is 41 - 5.
- - 5 being 41 `mod` 9. So I take 9 elements starting with startPos.
  -}
-getLineIndexes :: Int -> Line
+getLineIndexes :: Int -> [Int]
 getLineIndexes index = take 9 [first..]
     where first = index - (index `mod` 9)
 
